@@ -1,0 +1,23 @@
+name: Deploy Production
+on:
+  push:
+    branches: [main]
+defaults:
+  run:
+    shell: bash
+defaults:
+  run:
+    shell: bash
+jobs:
+  deploy-branch:
+    env:
+      NODE_ENV: production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch Deploy
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.REPO_DISPACTH_ACCESS_TOKEN }}
+          repository: trungdung22/terraform-boilerplate
+          event-type: deploy
+          client-payload: '{"ref": "${{ github.ref }}", "branch": "main" , "secret_name":"env-production" }'
