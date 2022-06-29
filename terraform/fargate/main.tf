@@ -33,6 +33,11 @@ module "ecr" {
   environment = var.environment
 }
 
+module "secrets" {
+  source              = "./secrets"
+  name                = var.name
+  environment         = var.environment
+}
 
 module "ecs" {
   source                      = "./modules/ecs"
@@ -52,5 +57,5 @@ module "ecs" {
     { name = "PORT",
     value = var.container_port }
   ]
-  aws_ecr_repository_url = module.ecr.aws_ecr_repository_url
+  container_image = module.ecr.aws_ecr_repository_url
 }
