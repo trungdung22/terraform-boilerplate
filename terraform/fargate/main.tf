@@ -52,7 +52,5 @@ module "ecs" {
     { name = "PORT",
     value = var.container_port }
   ]
-  container_secrets      = module.secrets.secrets_map
   aws_ecr_repository_url = module.ecr.aws_ecr_repository_url
-  container_secrets_arns = module.secrets.application_secrets_arn
 }

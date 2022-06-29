@@ -57,6 +57,11 @@ variable "container_cpu" {
   default     = 256
 }
 
+variable "container_image" {
+  description = "Docker image to be launched"
+  default = "Demo-image"
+}
+
 variable "container_memory" {
   description = "The amount (in MiB) of memory used by the task"
   default     = 512
