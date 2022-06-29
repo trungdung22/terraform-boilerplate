@@ -1,12 +1,10 @@
 name: Deploy Production
 on:
-  # Manual trigger
-  workflow_dispatch:
   push:
-    paths:
-      - '*/**'
-  pull_request:
-    branches: [ main ]
+    branches: [main]
+defaults:
+  run:
+    shell: bash
 defaults:
   run:
     shell: bash
