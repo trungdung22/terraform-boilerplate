@@ -1,3 +1,3 @@
-region = "eu-central-1"
-bucket = "demo-tf-backend-store"
+region = "ap-southeast-1"
+bucket = "demo-tf-backend-store-asia"
 key    = "terraform.tfstate"
