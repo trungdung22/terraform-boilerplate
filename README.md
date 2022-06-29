@@ -1,3 +1,3 @@
 # lambda-terraform-github-actions 
 
-Building a **continuous deployment** for **Lambda** functions in a **multi-stage environment** update.
+Building a **continuous deployment** for **Lambda** functions in a **multi-stage environment** update 2.
