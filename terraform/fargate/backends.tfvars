@@ -1,3 +1,3 @@
-region = "us-east-1"
-bucket = "devops4solutions-terraform"
-key    = "ecs-cluster/prod/terraform.tfstate"
+region = "eu-central-1"
+bucket = "demo-tf-backend-store"
+key    = "terraform.tfstate"
