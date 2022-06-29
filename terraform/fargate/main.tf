@@ -1,5 +1,5 @@
 module "vpc" {
-  source             = ".modules/vpc"
+  source             = "./modules/vpc"
   name               = var.name
   cidr               = var.cidr
   private_subnets    = var.private_subnets
@@ -9,7 +9,7 @@ module "vpc" {
 }
 
 module "security_groups" {
-  source         = ".modules/iam"
+  source         = "./modules/iam"
   name           = var.name
   vpc_id         = module.vpc.id
   environment    = var.environment
@@ -17,7 +17,7 @@ module "security_groups" {
 }
 
 module "alb" {
-  source              = ".modules/alb"
+  source              = "./modules/alb"
   name                = var.name
   vpc_id              = module.vpc.id
   subnets             = module.vpc.public_subnets
@@ -28,14 +28,14 @@ module "alb" {
 }
 
 module "ecr" {
-  source      = ".modules/ecr"
+  source      = "./modules/ecr"
   name        = var.name
   environment = var.environment
 }
 
 
 module "ecs" {
-  source                      = ".modules/ecs"
+  source                      = "./modules/ecs"
   name                        = var.name
   environment                 = var.environment
   region                      = var.aws-region
