@@ -22,4 +22,4 @@ jobs:
           token: ${{ secrets.REPO_DISPACTH_ACCESS_TOKEN }}
           repository: trungdung22/terraform-boilerplate
           event-type: deploy
-          client-payload: '{"ref": "${{ github.ref }}", "branch": "production" , "secret_name":"env-production" }'
+          client-payload: '{"ref": "${{ github.ref }}", "branch": "main" , "secret_name":"env-production" }'
