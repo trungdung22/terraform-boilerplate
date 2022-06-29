@@ -33,12 +33,6 @@ module "ecr" {
   environment = var.environment
 }
 
-module "secrets" {
-  source              = "./secrets"
-  name                = var.name
-  environment         = var.environment
-}
-
 module "ecs" {
   source                      = "./modules/ecs"
   name                        = var.name
