@@ -1,6 +1,7 @@
 # Dependencies
 node_modules
-
+ui/node_modules
+ui/build
 # yarn error logs
 yarn-error.log
 
