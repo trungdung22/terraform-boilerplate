@@ -1,16 +1,16 @@
 FROM node:12-alpine
 
-EXPOSE 80
 ENV ENV=production
 
 WORKDIR /app
-COPY package*.json ./
-COPY . .
+COPY package.json /app
+COPY .env /app
+COPY ecosystem.config.json /app
+COPY . /app
 
 RUN npm i pm2 -g
 RUN npm i
 COPY . .
-RUN tsc
+EXPOSE 8000
 
-
-CMD ["pm2-runtime", "./dist/index.js"]
+CMD ["npm", "run", "start"]

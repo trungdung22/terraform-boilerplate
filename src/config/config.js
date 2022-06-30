@@ -32,6 +32,7 @@ if (error) {
   throw new Error(`Config validation error: ${error.message}`);
 }
 
+console.log(envVars.NODE_ENV);
 module.exports = {
   env: envVars.NODE_ENV,
   port: envVars.PORT,
