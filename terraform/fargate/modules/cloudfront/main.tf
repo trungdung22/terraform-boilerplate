@@ -2,10 +2,37 @@ locals {
   s3_origin_id = "S3-origin-react-app"
 }
 
+resource "aws_cloudfront_origin_access_identity" "oai" {
+  comment = "my-react-app OAI"
+}
+
+data "aws_iam_policy_document" "s3_bucket_policy" {
+  statement {
+    sid = "1"
+
+    actions = [
+      "s3:GetObject",
+    ]
+
+    resources = [
+      "arn:aws:s3:::demo-react-bucket/*",
+    ]
+
+    principals {
+      type = "AWS"
+
+      identifiers = [
+        aws_cloudfront_origin_access_identity.origin_access_identity.iam_arn,
+      ]
+    }
+  }
+}
+
 resource "aws_s3_bucket" "static_react_bucket" {
   bucket = "demo-react-bucket"
   acl    = "private"
-
+  policy = data.aws_iam_policy_document.s3_bucket_policy.json
+  
   tags = {
     Name = "demo-react-bucket"
   }
@@ -24,9 +51,7 @@ resource "aws_s3_bucket_public_access_block" "block_public_access" {
   restrict_public_buckets = true
 }
 
-resource "aws_cloudfront_origin_access_identity" "oai" {
-  comment = "my-react-app OAI"
-}
+
 
 resource "aws_cloudfront_distribution" "cf_distribution" {
   origin {
