@@ -22,7 +22,7 @@ data "aws_iam_policy_document" "s3_bucket_policy" {
       type = "AWS"
 
       identifiers = [
-        aws_cloudfront_origin_access_identity.origin_access_identity.iam_arn,
+        aws_cloudfront_origin_access_identity.oai.iam_arn,
       ]
     }
   }
@@ -32,7 +32,7 @@ resource "aws_s3_bucket" "static_react_bucket" {
   bucket = "demo-react-bucket"
   acl    = "private"
   policy = data.aws_iam_policy_document.s3_bucket_policy.json
-  
+
   tags = {
     Name = "demo-react-bucket"
   }
