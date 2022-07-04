@@ -39,8 +39,11 @@ jobs:
          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
          AWS_DEFAULT_REGION: ap-southeast-1
-    steps:
+         SECRET_NAME: ${{ github.event.client_payload.secret_name }}
+         NAME: ${{ github.event.client_payload.name }}
+         ENVIRONMENT: ${{ github.event.client_payload.environment }}
 
+    steps:
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -64,7 +67,7 @@ jobs:
         with:
           path: "terraform/fargate/"
           workspace: ${{ steps.get-branch.outputs.branch }}
-          backend_config_file: terraform/fargate/backends.tfvars
+          backend_config_file: terraform/fargate/$ENVIRONMENT/backends.tfvars
 
       - name: Terraform Apply Fargate
         uses: dflook/terraform-apply@v1
@@ -73,7 +76,7 @@ jobs:
           workspace: ${{ steps.get-branch.outputs.branch }}
           auto_approve: true
           var_file: 
-            terraform/fargate/terraform.tfvars 
+            terraform/fargate/$ENVIRONMENT/terraform.tfvars 
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -87,7 +90,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ap-southeast-1
-          SECRET_NAME: env-production
+          SECRET_NAME: $SECRET_NAME
           OUTPUT_PATH: '.env'
 
       - name: Translate ENV variables
@@ -98,8 +101,8 @@ jobs:
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: demo-tf-dev
-          IMAGE_TAG: demo-tf-dev-${{ github.sha }}
+          ECR_REPOSITORY: $NAME-$ENVIRONMENT
+          IMAGE_TAG: $NAME-$ENVIRONMENT-${{ github.sha }}
 
         run: |
           # Build a docker container and
@@ -113,21 +116,21 @@ jobs:
         id: push-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: demo-tf-dev
-          IMAGE_TAG: demo-tf-dev-${{ github.sha }}
+          ECR_REPOSITORY: $NAME-$ENVIRONMENT
+          IMAGE_TAG: $NAME-$ENVIRONMENT-${{ github.sha }}
         run: |
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
       - name: Download task definition
-        run: aws ecs describe-task-definition --task-definition demo-tf-task-dev --query taskDefinition > task-definition.json
+        run: aws ecs describe-task-definition --task-definition $NAME-task-$ENVIRONMENT --query taskDefinition > task-definition.json
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: update-task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: task-definition.json
-          container-name: demo-tf-container-dev
+          container-name: $NAME-container-$ENVIRONMENT
           image: ${{ steps.push-image.outputs.image }}
 
       - name: Deploy Amazon ECS task definition
@@ -135,13 +138,16 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.update-task-def.outputs.task-definition }}
-          service: demo-tf-service-dev
-          cluster: demo-tf-cluster-dev
+          service: $NAME-service-$ENVIRONMENT
+          cluster: $NAME-tf-cluster-$ENVIRONMENT
 
   deploy-ui:
     name: deploy frontend
     needs: setup
     runs-on: ubuntu-latest
+    env:
+         NAME: ${{ github.event.client_payload.name }}
+         ENVIRONMENT: ${{ github.event.client_payload.environment }}
     defaults: 
       run:
         working-directory: ui
@@ -166,7 +172,7 @@ jobs:
       with:
         args: --follow-symlinks --delete --exclude '.git/*'
       env:
-        AWS_S3_BUCKET: demo-react-bucket
+        AWS_S3_BUCKET: $NAME-react-bucket-$ENVIRONMENT
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: 'ap-southeast-1'   # optional: defaults to us-east-1

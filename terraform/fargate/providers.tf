@@ -1,9 +1,6 @@
 terraform {
   backend "s3" {
-    bucket  = "demo-tf-backend-store-asia"
     encrypt = true
-    key     = "terraform.tfstate"
-    region  = "ap-southeast-1"
     # dynamodb_table = "terraform-state-lock-dynamo" - uncomment this line once the terraform-state-lock-dynamo has been terraformed
   }
   required_providers {

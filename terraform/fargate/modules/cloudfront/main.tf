@@ -1,9 +1,9 @@
 locals {
-  s3_origin_id = "S3-origin-react-app"
+  s3_origin_id = "S3-origin-react-app-${var.name}-${var.environment}"
 }
 
 resource "aws_cloudfront_origin_access_identity" "oai" {
-  comment = "my-react-app OAI"
+  comment = "my-react-app-${var.name}-${var.environment} OAI"
 }
 
 data "aws_iam_policy_document" "s3_bucket_policy" {
@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "s3_bucket_policy" {
     ]
 
     resources = [
-      "arn:aws:s3:::demo-react-bucket/*",
+      "arn:aws:s3:::${var.name}-react-bucket-${var.environment}/*",
     ]
 
     principals {
@@ -29,12 +29,12 @@ data "aws_iam_policy_document" "s3_bucket_policy" {
 }
 
 resource "aws_s3_bucket" "static_react_bucket" {
-  bucket = "demo-react-bucket"
+  bucket = "${var.name}-react-bucket-${var.environment}"
   acl    = "private"
   policy = data.aws_iam_policy_document.s3_bucket_policy.json
 
   tags = {
-    Name = "demo-react-bucket"
+    Name = "${var.name}-react-bucket-${var.environment}"
   }
 
   versioning {
