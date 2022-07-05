@@ -33,6 +33,7 @@ defaults:
 env:
   NAME: ${{ github.event.client_payload.name }}
   ENVIRONMENT: ${{ github.event.client_payload.environment }}
+  SECRET_NAME: ${{ github.event.client_payload.secret_name }}
 
 jobs:
   setup:
@@ -42,7 +43,7 @@ jobs:
          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
          AWS_DEFAULT_REGION: ap-southeast-1
-         SECRET_NAME: ${{ github.event.client_payload.secret_name }}
+         
 
     steps:
       - name: Checkout
@@ -91,7 +92,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ap-southeast-1
-          SECRET_NAME: $SECRET_NAME
+          SECRET_NAME: ${{ env.SECRET_NAME }}
           OUTPUT_PATH: '.env'
 
       - name: Translate ENV variables
