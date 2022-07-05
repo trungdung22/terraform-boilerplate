@@ -141,7 +141,7 @@ jobs:
         with:
           task-definition: ${{ steps.update-task-def.outputs.task-definition }}
           service: ${{env.NAME}}-service-${{env.ENVIRONMENT}}
-          cluster: ${{env.NAME}}-tf-cluster-${{env.ENVIRONMENT}}
+          cluster: ${{env.NAME}}-cluster-${{env.ENVIRONMENT}}
 
   deploy-ui:
     name: deploy frontend
