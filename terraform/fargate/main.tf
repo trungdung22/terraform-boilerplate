@@ -10,6 +10,8 @@ module "vpc" {
 
 module "cloudfront" {
   source         = "./modules/cloudfront"
+  name           = var.name
+  environment    = var.environment
 }
 
 module "security_groups" {
