@@ -19,6 +19,18 @@ variable "aws-region" {
   default     = "ap-southeast-1"
 }
 
+variable "s3_bucket" {
+  type        = string
+  description = "S3 bucket to store terraform state."
+  default     = "demo-tf-backend-store-dev"
+}
+
+variable "s3_key" {
+  type        = string
+  description = "S3 key for tf state."
+  default     = "terraform.tfstate"
+}
+
 variable "project" { default = "javaweb" }
 variable "platform" { default = "Devops" }
 

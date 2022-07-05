@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     encrypt = true
-    key     = var.region 
+    region  = var.region 
     bucket  = var.s3_bucket
     key     = var.s3_key
     # dynamodb_table = "terraform-state-lock-dynamo" - uncomment this line once the terraform-state-lock-dynamo has been terraformed
